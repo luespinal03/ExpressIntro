@@ -60,7 +60,7 @@ app.get('/add-movie', (req, res) => {
     newMovie = req.query.newMovie
     console.log(newMovie)
     favoriteMovieList.push(newMovie)
-    // console.log(favoriteMovieList)
+    console.log(favoriteMovieList)
     movieString = favoriteMovieList.join(', ')
     console.log(req.query)
     res.send('Saved New movie')
