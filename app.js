@@ -1,26 +1,45 @@
 // look for a file in node_modules called express and give variable express the value of all that code in file express
 const express = require('express')
 
+
+const bodyParser = require('body-parser')
 // initialize the Server and Port
 const app = express()
 const port = 3000
 
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({
+    extended: false
+}))
+
+// parse application/json
+app.use(bodyParser.json())
+
 // Global scope variables so that all routes can gain access to them
 let queryParamFirstName = null
 let queryParamLastName = null
-let favoriteMovieList = []
+// let favoriteMovieList = []
 let newMovie = null
 
 // For the assignment, make sure favoriteMovieList is in the global scope
 // const favoriteMovieList = [] 
 
-favoriteMovieList = ["Star Wars", "The Avengers", "A random movie"]
+const favoriteMovieList = ["Star Wars", "The Avengers", "A random movie"]
 const today = new Date()
+
+/*
+
+CONST (can be anything changed just not repointed to a different location)
+
+LET (used to re-assign the pointer location of the box)
+*/
 
 // Define the default server route (aka "/") for our server
 app.get('/', (req, res) => {
     console.log("Default Route")
-    res.send(`My name is Luis Espinal. Today is: ${today}`)
+    const myName = 'Luis Espinal'
+    const todayFormatted = today.toLocaleDateString()
+    res.send(`My name is ${myName}. Today is: ${todayFormatted}`)
 })
 
 // An example route for sending a simple string
@@ -29,16 +48,16 @@ app.get('/hello-class', (req, res) => {
     res.send('Hello Class!')
 })
 
-app.get('/favorite-movies', (req, res) => {
-    console.log("Favorite Movie Route")
-    let movieString = favoriteMovieList.join(', ')
-    res.send(`${movieString}`)
-})
+// app.get('/list-movies', (req, res) => {
+//     console.log("Favorite Movie Route")
+//     let movieString = favoriteMovieList.join(', ')
+//     res.send(`${movieString}`)
+// })
 
 // This route will get the user's info from the query params and assign those values to the global variables
 // Example url: http://localhost:4000/save-user-info?firstName=Timmy&lastName=Turner
-app.get('/save-user-info', (req, res) => {
-    console.log("Search Route")
+app.post('/save-user-info', (req, res) => {
+    console.log("Save user Route")
     // req.query is an object containing key/value pairs of the query params entered into the url after the ?
     console.log(req.query)
 
@@ -49,22 +68,110 @@ app.get('/save-user-info', (req, res) => {
     res.send(`New User Info Saved`)
 })
 
-app.get('/show-user-info', (req, res) => {
+app.post('/show-user-info', (req, res) => {
     console.log('show user info route')
     // This route will only work AFTER /save-user-info has been run
     res.send(`User Info => ${queryParamFirstName} ${queryParamLastName}`)
 })
 
-app.get('/add-movie', (req, res) => {
-    console.log('add movie route')
-    newMovie = req.query.newMovie
-    console.log(newMovie)
-    favoriteMovieList.push(newMovie)
-    console.log(favoriteMovieList)
-    movieString = favoriteMovieList.join(', ')
-    console.log(req.query)
-    res.send('Saved New movie')
+// app.get('/add-movie', (req, res) => {
+//     // localhost:3000/add-movie?newMovie=Terminator
+//     console.log('add movie route')
+//     newMovie = req.query.newMovie
+//     console.log(newMovie)
+//     favoriteMovieList.push(newMovie)
+//     console.log(favoriteMovieList)
+//     movieString = favoriteMovieList.join(', ')
+//     console.log(req.query)
+//     res.send('Saved New movie')
+// })
+
+
+
+// Create
+
+//  Post a new movie into the movies array
+app.post("/new-movie", (req, res) => {
+    // We'll use 
+    console.log(req.body)
+    // We must respond to the request, so for now we'll send back a hardcoded object
+    const newMovieTitle = req.body.title
+    favoriteMovieList.push(newMovieTitle)
+    res.json({
+        success: true
+    })
 })
+
+
+
+// Read
+
+
+// Get all the movies in our movie list
+app.get("/all-movies", (req, res) => {
+    // res.send only sends strings. From now on, we want to use re.json to send JSON objects or JS arrays
+    res.json(favoriteMovieList)
+})
+
+
+
+// Update
+
+
+app.put("/update-movie/:titleToUpdate", (req, res) => {
+    // We have a route parameter /:titleToUpdate to specify which movie to update
+    // The value of this route parameter will come through the req.params object
+    console.log("req params ", req.params)
+
+    const titleToUpdate = req.params.titleToUpdate
+    const newTitle = req.body.newTitle
+
+    console.log(titleToUpdate)
+    console.log(newTitle)
+
+    console.log("favoriteMovieList before", favoriteMovieList)
+    // In order to update the movie title we are targeting, first we find the index of the movie title in the array
+    const indexOfMovie = favoriteMovieList.indexOf(titleToUpdate)
+    console.log(indexOfMovie)
+
+    // overwrites the value of favoriteMovieList at indexOfMovie with newTitle
+    favoriteMovieList[indexOfMovie] = newTitle
+    console.log(favoriteMovieList)
+
+    res.json({
+        success: true
+    })
+})
+
+
+// Delete
+
+app.delete("/delete-movie/:titleToDelete", (req, res) => {
+
+    //This is t he title of the movie we want to find in the mopvies array and delete
+    const titleToDelete = req.params.titleToDelete
+    //find the inddex of the movie in the movie list
+    const indexOfMovie = favoriteMovieList.indexOf(titleToDelete)
+    console.log(indexOfMovie)
+
+    if (indexOfMovie < 0) {
+        // if the movie was not found in the array, respond with hasBeenDeleted: false and return so that no code underneath executes
+        res.json({
+            hasBeenDeleted: false
+        })
+        return;
+    }
+
+    console.log("Before Delete", favoriteMovieList)
+    //remove the movie title from the array at the index
+    favoriteMovieList.splice(indexOfMovie, 1)
+    console.log("After Delete", favoriteMovieList)
+    res.json({
+        hasBeenDeleted: true
+    })
+})
+
+
 
 // Finally, run the server
 app.listen(port, () => {
