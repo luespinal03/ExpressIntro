@@ -34,6 +34,12 @@ const favoriteMovieList = [{
     isRecommended: true,
     createdAt: new Date(),
     lastModified: new Date()
+}, {
+    title: "Dead Pool",
+    starRating: 5,
+    isRecommended: true,
+    createdAt: new Date(),
+    lastModified: new Date()
 }]
 const today = new Date()
 
@@ -105,9 +111,69 @@ app.post("/new-movie", (req, res) => {
     // We'll use 
     console.log("POST to /new-movie")
     console.log(req.body)
+
     // We must respond to the request, so for now we'll send back a hardcoded object
-    const newMovieTitle = req.body.title
-    favoriteMovieList.push(newMovieTitle)
+    // const newMovie = {
+    //     title: req.body.title,
+    //     starRating: req.body.starRating,
+    //     isRecommended: req.body.isRecommended
+    // }
+
+    const newMovie = {
+        title: "",
+        starRating: 0,
+        isRecommended: false,
+        createdAt: new Date(),
+        lastModified: new Date()
+    }
+
+    newMovie.title = req.body.title
+    newMovie.starRating = req.body.starRating
+
+
+    if (req.body.title === undefined) {
+        // Should trigger when req.body.isRecommended is undefined
+        console.log("title is not defined")
+        res.json({
+            success: false,
+            message: "title is required"
+        })
+        return;
+    } else {
+        newMovie.title = req.body.title
+    }
+
+
+
+    if (req.body.starRating === undefined) {
+        // Should trigger when req.body.isRecommended is undefined
+        console.log("starRating is not defined")
+        res.json({
+            success: false,
+            message: "starRating is required"
+        })
+        return;
+    } else {
+        newMovie.starRating = req.body.starRating
+    }
+
+
+
+    if (req.body.isRecommended === undefined) {
+        // Should trigger when req.body.isRecommended is undefined
+        console.log("isRecommended is not defined")
+        res.json({
+            success: false,
+            message: "isRecommended is required"
+        })
+        return;
+    } else {
+        newMovie.isRecommended = req.body.isRecommended
+    }
+
+    console.log("newMovie", newMovie)
+
+    favoriteMovieList.push(newMovie)
     res.json({
         success: true
     })
