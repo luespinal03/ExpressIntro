@@ -110,14 +110,7 @@ app.post('/show-user-info', (req, res) => {
 app.post("/new-movie", (req, res) => {
     // We'll use 
     console.log("POST to /new-movie")
-    console.log(req.body)
-
-    // We must respond to the request, so for now we'll send back a hardcoded object
-    // const newMovie = {
-    //     title: req.body.title,
-    //     starRating: req.body.starRating,
-    //     isRecommended: req.body.isRecommended
-    // }
+    console.log("req.body", req.body)
 
     const newMovie = {
         title: "",
@@ -200,11 +193,31 @@ app.put("/update-movie/:titleToUpdate", (req, res) => {
     // We have a route parameter /:titleToUpdate to specify which movie to update
     // The value of this route parameter will come through the req.params object
     console.log("PUT to /update-movie")
-
     console.log("req params ", req.params)
 
     const titleToUpdate = req.params.titleToUpdate
-    const newTitle = req.body.newTitle
+    // const newTitle = req.body.newTitle
+
+    const originalMovie = favoriteMovieList.findIndex() // We need to find the original movie in our movie array so that we can keep the original values that we dont want to modify. Hint: we need to use .findIndex()
+
+    const updatedMovie = {
+        title: "",
+        starRating: 0,
+        isRecommended: false,
+        lastModified: new Date()
+    }
+
+    if (req.body.title) {
+        updatedMovie.title = req.body.title
+    }
+    if (req.body.starRating) {
+        updatedMovie.starRating = req.body.starRating
+    }
+    if (req.body.isRecommended) {
+        updatedMovie.isRecommended = req.body.isRecommended
+    }
+
+    return;
 
     console.log(titleToUpdate)
     console.log(newTitle)
