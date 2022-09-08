@@ -1,7 +1,5 @@
-// look for a file in node_modules called express and give variable express the value of all that code in file express
+// look for a file in node_modules called 'express' and give variable express the value of all that code in file 'express'
 const express = require('express')
-
-
 const bodyParser = require('body-parser')
 // initialize the Server and Port
 const app = express()
@@ -24,7 +22,19 @@ let newMovie = null
 // For the assignment, make sure favoriteMovieList is in the global scope
 // const favoriteMovieList = [] 
 
-const favoriteMovieList = ["Star Wars", "The Avengers", "A random movie"]
+const favoriteMovieList = [{
+    title: "Star Wars",
+    starRating: 4,
+    isRecommended: true,
+    createdAt: new Date(),
+    lastModified: new Date()
+}, {
+    title: "The Avengers",
+    starRating: 5,
+    isRecommended: true,
+    createdAt: new Date(),
+    lastModified: new Date()
+}]
 const today = new Date()
 
 /*
@@ -43,10 +53,10 @@ app.get('/', (req, res) => {
 })
 
 // An example route for sending a simple string
-app.get('/hello-class', (req, res) => {
-    console.log("Hello Class Route")
-    res.send('Hello Class!')
-})
+// app.get('/hello-class', (req, res) => {
+//     console.log("Hello Class Route")
+//     res.send('Hello Class!')
+// })
 
 // app.get('/list-movies', (req, res) => {
 //     console.log("Favorite Movie Route")
@@ -57,7 +67,7 @@ app.get('/hello-class', (req, res) => {
 // This route will get the user's info from the query params and assign those values to the global variables
 // Example url: http://localhost:4000/save-user-info?firstName=Timmy&lastName=Turner
 app.post('/save-user-info', (req, res) => {
-    console.log("Save user Route")
+    console.log("Save User Info Route")
     // req.query is an object containing key/value pairs of the query params entered into the url after the ?
     console.log(req.query)
 
@@ -69,8 +79,8 @@ app.post('/save-user-info', (req, res) => {
 })
 
 app.post('/show-user-info', (req, res) => {
-    console.log('show user info route')
-    // This route will only work AFTER /save-user-info has been run
+    console.log('Show User Info Route')
+    // This route will only work AFTER /save-user-info has been ran
     res.send(`User Info => ${queryParamFirstName} ${queryParamLastName}`)
 })
 
@@ -93,6 +103,7 @@ app.post('/show-user-info', (req, res) => {
 //  Post a new movie into the movies array
 app.post("/new-movie", (req, res) => {
     // We'll use 
+    console.log("POST to /new-movie")
     console.log(req.body)
     // We must respond to the request, so for now we'll send back a hardcoded object
     const newMovieTitle = req.body.title
@@ -110,6 +121,7 @@ app.post("/new-movie", (req, res) => {
 // Get all the movies in our movie list
 app.get("/all-movies", (req, res) => {
     // res.send only sends strings. From now on, we want to use re.json to send JSON objects or JS arrays
+    console.log("GET to /all-movies")
     res.json(favoriteMovieList)
 })
 
@@ -121,6 +133,8 @@ app.get("/all-movies", (req, res) => {
 app.put("/update-movie/:titleToUpdate", (req, res) => {
     // We have a route parameter /:titleToUpdate to specify which movie to update
     // The value of this route parameter will come through the req.params object
+    console.log("PUT to /update-movie")
+
     console.log("req params ", req.params)
 
     const titleToUpdate = req.params.titleToUpdate
@@ -149,6 +163,7 @@ app.put("/update-movie/:titleToUpdate", (req, res) => {
 app.delete("/delete-movie/:titleToDelete", (req, res) => {
 
     //This is t he title of the movie we want to find in the mopvies array and delete
+    console.log("DELETE to /delete-movie")
     const titleToDelete = req.params.titleToDelete
     //find the inddex of the movie in the movie list
     const indexOfMovie = favoriteMovieList.indexOf(titleToDelete)
