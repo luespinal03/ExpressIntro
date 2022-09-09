@@ -280,6 +280,7 @@ app.delete("/delete-movie/:titleToDelete", (req, res) => {
 
     console.log("Before Delete ", favoriteMovieList)
     // Remove the movie title from the array at the index
+    // code below with .splice begins where ever indexOfMovie finds the titleToDelete(the title that matches the title user wants to delete). Then grabs the index of the title to be deleted and deletes it.
     favoriteMovieList.splice(indexOfMovie, 1)
     console.log("After Delete ", favoriteMovieList)
 
