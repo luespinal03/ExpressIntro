@@ -1,16 +1,19 @@
-// Bring in Express code
+// Bring in Express code (require is a method to bring in the library from node modules)
 const express = require('express')
 
 // Bring in body parser so that we can parse the POST request body
 const bodyParser = require('body-parser')
 
 // Initialize the Server and Port
+// const app is a variable with the value of the express libraby so we can use it for http requests? 
+// here we are using express library through the cons varibale "app"
 const app = express()
 const port = 3000
 
 // The following 2 lines are called middleware and they modify the request before it gets to our routes
 // so that we can properly access the values in the request body (req.body)
 // parse application/x-www-form-urlencoded
+// needed to use json raw on postman
 app.use(bodyParser.urlencoded({
     extended: false
 }))
@@ -18,7 +21,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json())
 
 // Global scope variables so that all routes can gain access to them
-let globalFirstName = 2;
+let globalFirstName = null;
 let globalLastName = null;
 
 // Define the default server route (aka "/") for our server
@@ -27,7 +30,7 @@ app.get('/', (req, res) => {
     //res stands for response and has the methods used for responding to a request on it
     console.log("default route")
 
-    const myName = "James Nissenbaum"
+    const myName = "Luis Espinal"
     const today = new Date()
     const todayFormatted = today.toLocaleDateString()
     console.log("Today ", today)
@@ -156,7 +159,7 @@ app.get("/all-movies", (req, res) => {
 
 app.get("/single-movie/:titleToFind", (req, res) => {
     const titleToFind = req.params.titleToFind
-
+    //  line below is going thorugh every movie object in our array while using .notation
     const foundMovieIndex = favoriteMovieList.findIndex((movie) => {
 
         if (movie.title === titleToFind) {
@@ -184,7 +187,7 @@ app.put("/update-movie/:titleToUpdate", (req, res) => {
     // The value of this route parameter will come through the req.params object
     console.log("req params ", req.params)
 
-    const titleToUpdate = req.params.titleToUpdate
+    // const titleToUpdate = req.params.titleToUpdate
 
     // We need to find the original movie in our movie array so that we can keep the original values that we don't want to modify. Hint: We need to use .findIndex()
     const originalMovieIndex = favoriteMovieList.findIndex((movie) => {
@@ -194,6 +197,7 @@ app.put("/update-movie/:titleToUpdate", (req, res) => {
 
         if (movie.title === req.params.titleToUpdate) {
             console.log("Movie Titles Match!")
+            // if true value is returned from using findIndex() then it returns that index it hits true on
             return true
         } else {
             console.log("Movie Titles Do Not Match")
@@ -202,7 +206,7 @@ app.put("/update-movie/:titleToUpdate", (req, res) => {
     })
 
     console.log("originalMovieIndex ", originalMovieIndex)
-
+    // this returns the index number of the movie title that matches
     const originalMovie = favoriteMovieList[originalMovieIndex];
 
     console.log("originalMovie ", originalMovie)
